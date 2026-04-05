@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>শুভ বিবাহ - Bipasa & Asan</title>
+    <link rel="icon" href="https://i.ibb.co/zHVFJGhZ/LS20260406003811.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Base Setup --- */
+        :root {
+            --cream-bg: #fdfbf7;
+            --text-dark: #1a432b; 
+            --sketch-color: rgba(184, 134, 11, 0.5); 
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--cream-bg);
+            font-family: 'Cinzel', serif;
+            overflow: hidden; 
+        }
+
+        /* --- Floating Music Button --- */
+        .music-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000; 
+            background: rgba(253, 251, 247, 0.9);
+            border: 2px solid #b8860b;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .music-btn:active { transform: scale(0.9); }
+        .pulse { animation: pulseGlow 2s infinite; }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(184, 134, 11, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(184, 134, 11, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(184, 134, 11, 0); }
+        }
+
+        /* --- CSS Scroll Snapping Setup --- */
+        .scroll-container {
+            width: 100%;
+            height: 100vh; /* Fallback for older browsers */
+            height: 100dvh; /* Dynamic height prevents bottom cut-off on mobile browsers */
+            overflow-y: scroll;
+            overflow-x: hidden;
+            scroll-snap-type: y mandatory; 
+            scroll-behavior: smooth;
+        }
+
+        .page-section {
+            position: relative;
+            width: 100%;
+            height: 100vh; 
+            height: 100dvh;
+            scroll-snap-align: start; 
+            overflow: hidden;
+        }
+
+        /* =========================================
+           PAGE 1: LOCKED MOBILE/DESKTOP SCENE
+           ========================================= */
+        .intro-page {
+            background-image: radial-gradient(circle at center, #ffffff 0%, #f4f0e6 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .lantern-container {
+            position: absolute;
+            top: -10px;
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            justify-content: space-around;
+            pointer-events: none;
+            z-index: 25;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .lantern {
+            width: 40px;
+            transform-origin: top center;
+            animation: swing 4s ease-in-out infinite alternate;
+            filter: drop-shadow(0 5px 5px rgba(184, 134, 11, 0.3));
+        }
+
+        .lantern:nth-child(1) { animation-duration: 4.5s; animation-delay: 0s; }
+        .lantern:nth-child(2) { animation-duration: 3.8s; animation-delay: 1s; width: 50px; }
+        .lantern:nth-child(3) { animation-duration: 4.2s; animation-delay: 0.5s; }
+
+        @keyframes swing {
+            0% { transform: rotate(-8deg); }
+            100% { transform: rotate(8deg); }
+        }
+
+        /* Text scales automatically to prevent squishing */
+        .content-layer {
+            position: absolute;
+            top: 10%;
+            left: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 20px;
+            box-sizing: border-box;
+            text-align: center;
+            text-shadow: 0 0 15px rgba(255,255,255,1), 0 0 25px rgba(255,255,255,0.9), 0 0 35px rgba(255,255,255,0.8);
+            z-index: 30;
+        }
+
+        .fade-element { opacity: 0; transform: translateY(15px); animation: fadeInUp 1.5s ease forwards; }
+        .delay-1 { animation-delay: 3s; }
+        .delay-2 { animation-delay: 4s; }
+        .delay-3 { animation-delay: 5s; }
+
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        .subtitle { font-size: clamp(1.2rem, 4vw, 1.5rem); letter-spacing: 4px; text-transform: uppercase; color: var(--text-dark); margin-bottom: 5px; font-weight: 700; }
+        .names { font-family: 'Great Vibes', cursive; font-size: clamp(3rem, 10vw, 4rem); line-height: 1.1; margin: 0 0 10px 0; color: var(--text-dark); font-weight: 700; }
+        .date { font-size: clamp(0.9rem, 3vw, 1.1rem); color: var(--text-dark); letter-spacing: 1px; font-weight: 600; }
+
+        /* SCENE LOCK: This anchors the mosque and couple together, letting edges bleed on mobile */
+        .bottom-scene {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            min-width: 700px; /* Forces sides off-screen on narrow phones */
+            max-width: 900px; /* Caps size on large desktops */
+            display: flex;
+            justify-content: center;
+            align-items: flex-end; 
+            z-index: 10;
+        }
+
+        .mosque-bg { 
+            width: 100%; 
+            height: auto; 
+            z-index: 1; 
+            opacity: 0.8; 
+            display: block; 
+        }
+
+        .mosque-bg path, .mosque-bg line, .mosque-bg rect {
+            fill: none; stroke: var(--sketch-color); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+            stroke-dasharray: 4000; stroke-dashoffset: 4000; animation: drawSketch 5s ease-in-out forwards; 
+        }
+
+        @keyframes drawSketch { 100% { stroke-dashoffset: 0; } }
+
+        /* The couple image is now sized & positioned relative to the mosque wrapper */
+        .couple-image {
+            position: absolute; 
+            bottom: 4.5%; /* Anchors exactly to the top step regardless of screen size */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 42%; /* Perfect proportion to the mosque */
+            z-index: 15; 
+            object-fit: contain; 
+            filter: drop-shadow(0px -5px 20px rgba(255,255,255,0.6)); 
+            opacity: 0; 
+            animation: fadeInImage 2s ease forwards; 
+            animation-delay: 5.5s; 
+        }
+
+        @keyframes fadeInImage { to { opacity: 1; } }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 40;
+            color: var(--text-dark);
+            font-size: 1.5rem;
+            opacity: 0;
+            animation: bounceFade 2s infinite, fadeInImage 1s forwards;
+            animation-delay: 0s, 7s; 
+        }
+
+        @keyframes bounceFade {
+            0%, 100% { transform: translateY(0) translateX(-50%); opacity: 0.5; }
+            50% { transform: translateY(10px) translateX(-50%); opacity: 1; }
+        }
+
+        /* Short Screen Protection */
+        @media (max-height: 700px) {
+            .content-layer { top: 5%; transform: scale(0.85); transform-origin: top center; }
+        }
+
+        /* =========================================
+           PAGES 2, 3, 4: IMAGE CARDS
+           ========================================= */
+        .card-page {
+            position: relative;
+            background-color: #000;
+        }
+
+        .card-page::before {
+            content: '';
+            position: absolute;
+            top: -5%; left: -5%; right: -5%; bottom: -5%;
+            background-image: var(--bg-image);
+            background-size: cover;
+            background-position: center;
+            filter: blur(25px) brightness(0.8);
+            z-index: 1;
+        }
+
+        .card-img {
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            max-width: 600px; 
+            object-fit: contain; 
+            margin: 0 auto;
+            display: block;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+
+        /* --- Falling Flowers --- */
+        .petal {
+            position: fixed; 
+            border-radius: 150% 0 150% 0;
+            opacity: 0.8;
+            pointer-events: none;
+            z-index: 50; 
+            animation: fall linear infinite;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg) scale(0.8); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(110vh) rotate(360deg) scale(1.2); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop>
+        <source src="https://files.catbox.moe/jdn2z1.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="music-btn" class="music-btn pulse">🎵</div>
+
+    <div class="scroll-container">
+
+        <section class="page-section intro-page">
+            <div class="lantern-container">
+                <svg class="lantern delay-1" viewBox="0 0 40 100">
+                    <line x1="20" y1="0" x2="20" y2="40" stroke="#b8860b" stroke-width="2"/>
+                    <polygon points="10,40 30,40 35,60 20,70 5,60" fill="rgba(184, 134, 11, 0.2)" stroke="#b8860b" stroke-width="2"/>
+                    <polygon points="10,80 30,80 35,60 5,60" fill="rgba(184, 134, 11, 0.2)" stroke="#b8860b" stroke-width="2"/>
+                </svg>
+                <svg class="lantern delay-2" viewBox="0 0 40 100">
+                    <line x1="20" y1="0" x2="20" y2="25" stroke="#b8860b" stroke-width="2"/>
+                    <polygon points="10,25 30,25 35,45 20,55 5,45" fill="rgba(184, 134, 11, 0.2)" stroke="#b8860b" stroke-width="2"/>
+                    <polygon points="10,65 30,65 35,45 5,45" fill="rgba(184, 134, 11, 0.2)" stroke="#b8860b" stroke-width="2"/>
+                </svg>
+                <svg class="lantern delay-3" viewBox="0 0 40 100">
+                    <line x1="20" y1="0" x2="20" y2="50" stroke="#b8860b" stroke-width="2"/>
+                    <polygon points="10,50 30,50 35,70 20,80 5,70" fill="rgba(184, 134, 11, 0.2)" stroke="#b8860b" stroke-width="2"/>
+                    <polygon points="10,90 30,90 35,70 5,70" fill="rgba(184, 134, 11, 0.2)" stroke="#b8860b" stroke-width="2"/>
+                </svg>
+            </div>
+
+            <div class="content-layer">
+                <div class="subtitle fade-element delay-1">Wedding</div>
+                <div class="names fade-element delay-2">Bipasa & Asan</div>
+                <div class="date fade-element delay-3">On Thursday 27th April, 2026</div>
+            </div>
+
+            <div class="bottom-scene">
+                <img src="https://i.ibb.co/tMVPKcNg/IMG-20260405-005819.png" alt="Bipasa and Asan" class="couple-image">
+
+                <svg class="mosque-bg" viewBox="0 -40 600 540" preserveAspectRatio="xMidYMax meet">
+                    <path d="M 40 495 L 560 495 M 60 480 L 540 480 M 80 465 L 520 465" />
+                    <rect x="85" y="335" width="30" height="130" /> 
+                    <rect x="90" y="215" width="20" height="120" /> 
+                    <rect x="93" y="145" width="14" height="70" />  
+                    <path d="M 80 335 L 120 335 M 85 215 L 115 215 M 88 145 L 112 145" /> 
+                    <path d="M 90 145 C 90 105, 110 105, 110 145" /> 
+                    <line x1="100" y1="120" x2="100" y2="90" /> 
+                    <path d="M 95 245 L 95 225 C 95 205, 105 205, 105 245" /> 
+                    <rect x="485" y="335" width="30" height="130" /> 
+                    <rect x="490" y="215" width="20" height="120" /> 
+                    <rect x="493" y="145" width="14" height="70" />  
+                    <path d="M 480 335 L 520 335 M 485 215 L 515 215 M 488 145 L 512 145" /> 
+                    <path d="M 490 145 C 490 105, 510 105, 510 145" /> 
+                    <line x1="500" y1="120" x2="500" y2="90" /> 
+                    <path d="M 495 245 L 495 225 C 495 205, 505 205, 505 245" /> 
+                    <rect x="130" y="315" width="90" height="150" />
+                    <path d="M 150 465 L 150 395 C 150 355, 200 355, 200 465" /> 
+                    <path d="M 130 315 L 220 315" /> 
+                    <path d="M 140 295 C 130 235, 160 215, 175 185 C 190 215, 220 235, 210 295 Z" />
+                    <line x1="175" y1="185" x2="175" y2="155" />
+                    <line x1="145" y1="330" x2="205" y2="330" stroke-dasharray="10 10" stroke-width="8" />
+                    <rect x="380" y="315" width="90" height="150" />
+                    <path d="M 400 465 L 400 395 C 400 355, 450 355, 450 465" /> 
+                    <path d="M 380 315 L 470 315" /> 
+                    <path d="M 390 295 C 380 235, 410 215, 425 185 C 440 215, 470 235, 460 295 Z" />
+                    <line x1="425" y1="185" x2="425" y2="155" />
+                    <line x1="395" y1="330" x2="455" y2="330" stroke-dasharray="10 10" stroke-width="8" />
+                    <rect x="220" y="275" width="160" height="190" />
+                    <path d="M 240 465 L 240 385 C 240 345, 280 355, 300 305 C 320 355, 360 345, 360 385 L 360 465" />
+                    <path d="M 260 465 L 260 395 C 260 365, 280 375, 300 335 C 320 375, 340 365, 340 395 L 340 465" />
+                    <path d="M 275 465 L 275 415 C 275 395, 290 395, 300 365 C 310 395, 325 395, 325 415 L 325 465" />
+                    <line x1="235" y1="290" x2="365" y2="290" stroke-dasharray="12 12" stroke-width="10" />
+                    <rect x="230" y="255" width="140" height="20" rx="5" />
+                    <path d="M 230 255 C 200 125, 260 75, 300 35 C 340 75, 400 125, 370 255 Z" />
+                    <line x1="300" y1="35" x2="300" y2="5" />
+                    <path d="M 300 5 C 270 5, 270 -25, 300 -25 C 285 -15, 285 -5, 300 5 Z" />
+                    <path d="M 245 215 C 235 165, 260 115, 290 85" />
+                    <path d="M 220 275 L 230 255 L 240 275 L 250 255 L 260 275 L 270 255 L 280 275 L 290 255 L 300 275 L 310 255 L 320 275 L 330 255 L 340 275 L 350 255 L 360 275 L 370 255 L 380 275" />
+                </svg>
+            </div>
+            
+            <div class="scroll-hint">▼</div>
+        </section>
+
+        <section class="page-section card-page" style="--bg-image: url('https://i.ibb.co/Fbwt0Zj8/B-Card-Bulbul.jpg');">
+            <img src="https://i.ibb.co/Fbwt0Zj8/B-Card-Bulbul.jpg" alt="Event Details" class="card-img">
+        </section>
+
+        <section class="page-section card-page" style="--bg-image: url('https://i.ibb.co/KxH1kpLw/C-Card-Bulbul-copy.jpg');">
+            <img src="https://i.ibb.co/KxH1kpLw/C-Card-Bulbul-copy.jpg" alt="Invitation Letter" class="card-img">
+        </section>
+
+        <section class="page-section card-page" style="--bg-image: url('https://i.ibb.co/32JBtPr/A-Card-Bulbul-copy.jpg');">
+            <img src="https://i.ibb.co/32JBtPr/A-Card-Bulbul-copy.jpg" alt="Wedding Cover" class="card-img">
+        </section>
+
+    </div>
+
+    <script>
+        // --- Falling Flowers Logic ---
+        function createPetals() {
+            const petalCount = 35; 
+            const body = document.querySelector('body');
+            const colors = ['#ffffff', '#ffffff', '#e8f5e9', '#a5d6a7']; 
+
+            for (let i = 0; i < petalCount; i++) {
+                let petal = document.createElement('div');
+                petal.classList.add('petal');
+                
+                let color = colors[Math.floor(Math.random() * colors.length)];
+                let size = Math.random() * 12 + 8; 
+                let leftPosition = Math.random() * 100; 
+                let duration = Math.random() * 6 + 6; 
+                let delay = Math.random() * 5; 
+
+                petal.style.backgroundColor = color;
+                petal.style.width = `${size}px`;
+                petal.style.height = `${size}px`;
+                petal.style.left = `${leftPosition}%`;
+                petal.style.animationDuration = `${duration}s`;
+                petal.style.animationDelay = `${delay}s`;
+
+                body.appendChild(petal);
+            }
+        }
+        
+        window.onload = createPetals;
+
+        // --- Background Music Logic ---
+        const music = document.getElementById('bg-music');
+        const musicBtn = document.getElementById('music-btn');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                musicBtn.innerHTML = '🔇'; 
+                musicBtn.classList.remove('pulse');
+            } else {
+                music.play().catch(error => {
+                    console.log("Audio play failed until user interacts.", error);
+                });
+                musicBtn.innerHTML = '🎵'; 
+                musicBtn.classList.remove('pulse'); 
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // Tap the button to Play/Pause
+        musicBtn.addEventListener('click', function(event) {
+            event.stopPropagation(); 
+            toggleMusic();
+        });
+    </script>
+</body>
+</html>
