@@ -57,8 +57,8 @@
         /* --- CSS Scroll Snapping Setup --- */
         .scroll-container {
             width: 100%;
-            height: 100vh; /* Fallback for older browsers */
-            height: 100dvh; /* Dynamic height prevents bottom cut-off on mobile browsers */
+            height: 100vh; 
+            height: 100dvh; 
             overflow-y: scroll;
             overflow-x: hidden;
             scroll-snap-type: y mandatory; 
@@ -82,6 +82,33 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+        }
+
+        /* --- Dedicated Falling Flowers Container (Page 1 Only) --- */
+        #petal-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; 
+            z-index: 100; /* Sits above text and mosque */
+            overflow: hidden;
+        }
+
+        .petal {
+            position: absolute; 
+            border-radius: 150% 0 150% 0;
+            opacity: 0.8;
+            animation: fall linear infinite;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg) scale(0.8); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(110vh) rotate(360deg) scale(1.2); opacity: 0; }
         }
 
         .lantern-container {
@@ -113,7 +140,6 @@
             100% { transform: rotate(8deg); }
         }
 
-        /* Text scales automatically to prevent squishing */
         .content-layer {
             position: absolute;
             top: 10%;
@@ -140,15 +166,14 @@
         .names { font-family: 'Great Vibes', cursive; font-size: clamp(3rem, 10vw, 4rem); line-height: 1.1; margin: 0 0 10px 0; color: var(--text-dark); font-weight: 700; }
         .date { font-size: clamp(0.9rem, 3vw, 1.1rem); color: var(--text-dark); letter-spacing: 1px; font-weight: 600; }
 
-        /* SCENE LOCK: This anchors the mosque and couple together, letting edges bleed on mobile */
         .bottom-scene {
             position: absolute;
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
             width: 100%;
-            min-width: 700px; /* Forces sides off-screen on narrow phones */
-            max-width: 900px; /* Caps size on large desktops */
+            min-width: 700px; 
+            max-width: 900px; 
             display: flex;
             justify-content: center;
             align-items: flex-end; 
@@ -170,13 +195,12 @@
 
         @keyframes drawSketch { 100% { stroke-dashoffset: 0; } }
 
-        /* The couple image is now sized & positioned relative to the mosque wrapper */
         .couple-image {
             position: absolute; 
-            bottom: 4.5%; /* Anchors exactly to the top step regardless of screen size */
+            bottom: 4.5%; 
             left: 50%;
             transform: translateX(-50%);
-            width: 42%; /* Perfect proportion to the mosque */
+            width: 42%; 
             z-index: 15; 
             object-fit: contain; 
             filter: drop-shadow(0px -5px 20px rgba(255,255,255,0.6)); 
@@ -205,7 +229,6 @@
             50% { transform: translateY(10px) translateX(-50%); opacity: 1; }
         }
 
-        /* Short Screen Protection */
         @media (max-height: 700px) {
             .content-layer { top: 5%; transform: scale(0.85); transform-origin: top center; }
         }
@@ -240,37 +263,22 @@
             display: block;
             box-shadow: 0 0 30px rgba(0,0,0,0.5);
         }
-
-        /* --- Falling Flowers --- */
-        .petal {
-            position: fixed; 
-            border-radius: 150% 0 150% 0;
-            opacity: 0.8;
-            pointer-events: none;
-            z-index: 50; 
-            animation: fall linear infinite;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        @keyframes fall {
-            0% { transform: translateY(-10vh) rotate(0deg) scale(0.8); opacity: 0; }
-            10% { opacity: 0.8; }
-            90% { opacity: 0.8; }
-            100% { transform: translateY(110vh) rotate(360deg) scale(1.2); opacity: 0; }
-        }
     </style>
 </head>
 <body>
 
-    <audio id="bg-music" loop>
+    <audio id="bg-music" loop preload="auto">
         <source src="https://files.catbox.moe/jdn2z1.mp3" type="audio/mpeg">
     </audio>
 
     <div id="music-btn" class="music-btn pulse">🎵</div>
 
-    <div class="scroll-container">
+    <div class="scroll-container" id="main-scroller">
 
         <section class="page-section intro-page">
+            
+            <div id="petal-container"></div>
+
             <div class="lantern-container">
                 <svg class="lantern delay-1" viewBox="0 0 40 100">
                     <line x1="20" y1="0" x2="20" y2="40" stroke="#b8860b" stroke-width="2"/>
@@ -292,7 +300,7 @@
             <div class="content-layer">
                 <div class="subtitle fade-element delay-1">Wedding</div>
                 <div class="names fade-element delay-2">Bipasa & Asan</div>
-                <div class="date fade-element delay-3">On Thursday 27th April, 2026</div>
+                <div class="date fade-element delay-3">On Thursday 23rd April, 2026</div>
             </div>
 
             <div class="bottom-scene">
@@ -358,10 +366,11 @@
     </div>
 
     <script>
-        // --- Falling Flowers Logic ---
+        // --- Guaranteed Falling Flowers Logic ---
         function createPetals() {
             const petalCount = 35; 
-            const body = document.querySelector('body');
+            // Now fetching the container that is specifically locked inside Page 1
+            const container = document.getElementById('petal-container');
             const colors = ['#ffffff', '#ffffff', '#e8f5e9', '#a5d6a7']; 
 
             for (let i = 0; i < petalCount; i++) {
@@ -381,36 +390,50 @@
                 petal.style.animationDuration = `${duration}s`;
                 petal.style.animationDelay = `${delay}s`;
 
-                body.appendChild(petal);
+                container.appendChild(petal);
             }
         }
         
-        window.onload = createPetals;
+        // Ensure petals render immediately without waiting for heavy network requests
+        createPetals();
 
-        // --- Background Music Logic ---
+        // --- Aggressive Mobile Auto-Music Logic ---
         const music = document.getElementById('bg-music');
-        const musicBtn = document.getElementById('music-btn');
-        let isPlaying = false;
+        let hasMusicStarted = false;
 
-        function toggleMusic() {
-            if (isPlaying) {
+        function attemptPlay() {
+            if (!hasMusicStarted) {
+                music.play().then(() => {
+                    hasMusicStarted = true;
+                    // Once successful, remove listeners
+                    document.removeEventListener('touchstart', attemptPlay);
+                    document.removeEventListener('click', attemptPlay);
+                    window.removeEventListener('scroll', attemptPlay, true);
+                }).catch(error => {
+                    console.log("Awaiting stronger user interaction...");
+                });
+            }
+        }
+
+        // Listeners for auto-play triggers
+        document.addEventListener('touchstart', attemptPlay, { passive: true });
+        document.addEventListener('click', attemptPlay);
+        window.addEventListener('scroll', attemptPlay, { passive: true, capture: true });
+        
+        // Manual Music Button Toggle
+        const musicBtn = document.getElementById('music-btn');
+        musicBtn.addEventListener('click', function(event) {
+            event.stopPropagation(); 
+            if (music.paused) {
+                music.play();
+                musicBtn.innerHTML = '🎵'; 
+                musicBtn.classList.remove('pulse');
+                hasMusicStarted = true;
+            } else {
                 music.pause();
                 musicBtn.innerHTML = '🔇'; 
                 musicBtn.classList.remove('pulse');
-            } else {
-                music.play().catch(error => {
-                    console.log("Audio play failed until user interacts.", error);
-                });
-                musicBtn.innerHTML = '🎵'; 
-                musicBtn.classList.remove('pulse'); 
             }
-            isPlaying = !isPlaying;
-        }
-
-        // Tap the button to Play/Pause
-        musicBtn.addEventListener('click', function(event) {
-            event.stopPropagation(); 
-            toggleMusic();
         });
     </script>
 </body>
